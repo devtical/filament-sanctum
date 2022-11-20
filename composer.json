@@ -1,0 +1,57 @@
+{
+    "name": "devtical/filament-sanctum",
+    "description": "Filament Sanctum",
+    "keywords": [
+        "Devtical",
+        "sanctum",
+        "laravel"
+    ],
+    "homepage": "https://github.com/devtical/filament-sanctum",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Wahyu Kristianto",
+            "email": "w.kristories@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/contracts": "^9.0",
+        "laravel/sanctum": "^3.0",
+        "filament/filament": "^2.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "pestphp/pest": "^1.20",
+        "orchestra/testbench": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Devtical\\Sanctum\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Devtical\\Sanctum\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Devtical\\Sanctum\\SanctumServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

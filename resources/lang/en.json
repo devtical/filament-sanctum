@@ -1,0 +1,14 @@
+{
+    "Sanctum": "Token",
+    "Name": "Name",
+    "Abilities": "Abilities",
+    "Last used at": "Last used at",
+    "Created at": "Created at",
+    "Create a new Token": "Create a new Token",
+    "Saved successfully": "Saved successfully",
+    "Token was created successfully": "Token was created successfully",
+    "Token Name": "Token Name",
+    "Delete": "Delete",
+    "Attention needed": "Attention needed",
+    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Make sure to copy your new personal access token now. You won't be able to see it again!"
+}
