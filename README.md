@@ -8,6 +8,12 @@ You can install the package via composer:
 composer require devtical/filament-sanctum
 ```
 
+Config: 
+
+```bash
+php artisan vendor:publish --tag=filament-sanctum-config
+```
+
 Translations:
 
 ```bash
