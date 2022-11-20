@@ -1,5 +1,10 @@
 # Filament Sanctum
 
+<p align="center">
+    <img src="./art/create-token.png" alt="Create Token">
+    <img src="./art/token-created.png" alt="Token Created">
+</p>
+
 ## Installation
 
 You can install the package via composer:
