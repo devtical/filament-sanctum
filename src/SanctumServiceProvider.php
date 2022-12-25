@@ -20,6 +20,7 @@ class SanctumServiceProvider extends PluginServiceProvider
     {
         $package
             ->name('filament-sanctum')
+            ->hasViews()
             ->hasConfigFile()
             ->hasAssets('filament-sanctum')
             ->hasTranslations();
