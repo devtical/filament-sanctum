@@ -100,8 +100,8 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
     protected function getTableBulkActions(): array
     {
         return [
-            BulkAction::make('delete')
-                ->label(trans('Delete'))
+            BulkAction::make('revoke')
+                ->label(trans('Revoke'))
                 ->action(fn (Collection $records) => $records->each->delete())
                 ->deselectRecordsAfterCompletion()
                 ->requiresConfirmation()
