@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - "**"
+    pull_request:
+      branches: [main]
+
+jobs:
+  run-tests:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        php: ['8.0', 8.1, 8.2]
+        filament: [2.*]
+        os: [ubuntu-latest]
+        include:
+          - laravel: 9.*
+            testbench: 7.*
+          - laravel: 8.*
+            testbench: 6.*
+
+        exclude:
+          - laravel: 8.*
+            php: 8.2
+
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extension: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "illuminate/contracts:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer install --prefer-dist --no-interaction --no-suggest
+      - name: Installed dependencies
+        run: composer show -D
+
+      - name: Execute tests
+        run: vendor/bin/phpunit --exclude-group skipped
