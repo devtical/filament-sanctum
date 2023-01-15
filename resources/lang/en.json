@@ -8,7 +8,7 @@
     "Saved successfully": "Saved successfully",
     "Token was created successfully": "Token was created successfully",
     "Token Name": "Token Name",
-    "Delete": "Delete",
+    "Revoke": "Revoke",
     "Attention needed": "Attention needed",
     "Make sure to copy your new personal access token now. You won't be able to see it again!": "Make sure to copy your new personal access token now. You won't be able to see it again!"
 }
