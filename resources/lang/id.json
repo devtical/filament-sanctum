@@ -1,0 +1,14 @@
+{
+    "Sanctum": "Token",
+    "Name": "Nama",
+    "Abilities": "Kemampuan",
+    "Last used at": "Digunakan terakhir",
+    "Created at": "Dibuat",
+    "Create a new Token": "Buat Token baru",
+    "Saved successfully": "Berhasil disimpan",
+    "Token was created successfully": "Token berhasil dibuat",
+    "Token Name": "Nama Token",
+    "Revoke": "Cabut",
+    "Attention needed": "Perlu perhatian",
+    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Pastikan untuk menyalin token akses pribadi baru Anda sekarang. Anda tidak akan dapat melihatnya lagi!"
+}
