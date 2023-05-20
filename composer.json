@@ -15,7 +15,6 @@
         }
     ],
     "require": {
-        "illuminate/contracts": "^9.0",
         "laravel/sanctum": "^3.0",
         "filament/filament": "^2.0"
     },
