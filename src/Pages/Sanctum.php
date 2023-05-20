@@ -20,16 +20,24 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
 
     protected static string $view = 'filament-sanctum::pages.sanctum';
 
-    protected static ?string $slug = 'sanctum';
+    public static function getSlug(): string
+    {
+        return config('filament-sanctum.slug');
+    }
 
     protected function getTitle(): string
     {
-        return trans('Sanctum');
+        return trans(config('filament-sanctum.label'));
     }
 
     protected static function getNavigationLabel(): string
     {
-        return trans('Sanctum');
+        return trans(config('filament-sanctum.label'));
+    }
+
+    protected static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-sanctum.navigation_menu');
     }
 
     protected function getTableQuery(): Builder
@@ -83,7 +91,7 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
                         ->title(trans('Token was created successfully'))
                         ->send();
 
-                    return redirect(config('filament.path').'/sanctum');
+                    return redirect(route('filament.pages.'.config('filament-sanctum.slug')));
                 })
                 ->form([
                     Forms\Components\TextInput::make('name')

@@ -33,6 +33,10 @@ return [
         'blog:delete' => 'Delete Blog',
     ],
     'columns' => 4,
+    'navigation_menu' => true,
+    'user_menu' => false,
+    'label' => 'Sanctum',
+    'slug' => 'sanctum',
 
 ];
 ```
