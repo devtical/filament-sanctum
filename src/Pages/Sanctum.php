@@ -27,6 +27,18 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
         return trans('Sanctum');
     }
 
+    protected static function getNavigationGroup(): ?string
+    {
+        return config('filament-sanctum.navigation.should_register', true)
+            ? config('filament-sanctum.navigation.group', null)
+            : '';
+    }
+
+    protected static function getNavigationSort(): ?int
+    {
+        return config('filament-sanctum.navigation.sort', -1);
+    }
+
     protected static function getNavigationLabel(): string
     {
         return trans('Sanctum');
