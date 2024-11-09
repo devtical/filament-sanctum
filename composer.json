@@ -1,7 +1,6 @@
 {
     "name": "eightygrit/filament-sanctum",
     "description": "Filament Sanctum",
-    "version": "1.1.0",
     "type": "library",
     
     "keywords": [

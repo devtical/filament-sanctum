@@ -19,7 +19,7 @@ In `composer.json` add a new property for `repositories`:
         "filament/filament": "^3.2",
         "laravel/framework": "^11.0",
         // ...
-        "eightygrit/filament-sanctum": "^1.1"
+        "eightygrit/filament-sanctum": "^2.0"
     },
     // ...
     "repositories": [
