@@ -1,12 +1,15 @@
 {
-    "name": "devtical/filament-sanctum",
+    "name": "eightygrit/filament-sanctum",
     "description": "Filament Sanctum",
+    "version": "1.1.0",
+    "type": "library",
+    
     "keywords": [
-        "Devtical",
+        "personal tokens",
         "sanctum",
         "laravel"
     ],
-    "homepage": "https://github.com/devtical/filament-sanctum",
+    "homepage": "https://github.com/eightygrit/filament-sanctum",
     "license": "MIT",
     "authors": [
         {

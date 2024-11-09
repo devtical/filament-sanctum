@@ -7,17 +7,43 @@
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via composer, but you need to ensure you can install it via GitHub.
 
-```bash
-composer require devtical/filament-sanctum
-```
+In `composer.json` add a new property for `repositories`:
 
-Config: 
+````json
+{
+    // ...
+    "require": {
+        "php": "^8.2",
+        "filament/filament": "^3.2",
+        "laravel/framework": "^11.0",
+        // ...
+        "eightygrit/filament-sanctum": "^1.0"
+    },
+    // ...
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/eightygrit/filament-sanctum.git"
+        }
+    ]
+}
+````
+
+Save the `composer.json` file. Then run `composer update`.
+
+Finally, publish the vendor files: 
+
+## Configuration
+
+Publish the config file by running:
 
 ```bash
 php artisan vendor:publish --tag=filament-sanctum-config
 ```
+
+Update the config file as you see fit:
 
 ```php
 return [
@@ -41,7 +67,7 @@ return [
 ];
 ```
 
-Translations:
+## Translations
 
 ```bash
 php artisan vendor:publish --tag=filament-sanctum-translations
