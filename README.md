@@ -19,7 +19,7 @@ In `composer.json` add a new property for `repositories`:
         "filament/filament": "^3.2",
         "laravel/framework": "^11.0",
         // ...
-        "eightygrit/filament-sanctum": "^1.0"
+        "eightygrit/filament-sanctum": "^1.1"
     },
     // ...
     "repositories": [
@@ -33,11 +33,10 @@ In `composer.json` add a new property for `repositories`:
 
 Save the `composer.json` file. Then run `composer update`.
 
-Finally, publish the vendor files: 
 
 ## Configuration
 
-Publish the config file by running:
+Publish the vendor config file by running:
 
 ```bash
 php artisan vendor:publish --tag=filament-sanctum-config
