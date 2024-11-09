@@ -5,7 +5,7 @@ namespace Eightygrit\FilamentSanctum;
 use Eightygrit\FilamentSanctum\Pages\Sanctum;
 use Filament\FilamentServiceProvider;
 use Spatie\LaravelPackageTools\Package;
-use Filament\Navigation\UserMenuItem;
+use Filament\Navigation\MenuItem;
 
 class SanctumServiceProvider extends FilamentServiceProvider
 {
@@ -30,7 +30,7 @@ class SanctumServiceProvider extends FilamentServiceProvider
     protected function getUserMenuItems(): array
     {
         return config('filament-sanctum.user_menu') ? [
-            UserMenuItem::make()
+            MenuItem::make()
                 ->label(trans(config('filament-sanctum.label')))
                 ->url(route('filament.pages.'.config('filament-sanctum.slug')))
                 ->icon('heroicon-s-cog'),
