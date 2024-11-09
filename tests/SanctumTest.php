@@ -1,6 +1,6 @@
 <?php
 
-namespace Devtical\Sanctum\Tests;
+namespace Eightygrit\FilamentSanctum\Tests;
 
 use PHPUnit\Framework\TestCase;
 

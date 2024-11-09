@@ -1,6 +1,6 @@
 <?php
 
-namespace Devtical\Sanctum\Pages;
+namespace EightyGrit\FilamentSanctum\Pages;
 
 use Filament\Forms;
 use Filament\Notifications\Notification;

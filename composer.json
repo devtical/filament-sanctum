@@ -15,6 +15,10 @@
         {
             "name": "Wahyu Kristianto",
             "email": "w.kristories@gmail.com"
+        },
+        {
+            "name": "Shelton Koskie",
+            "email": "shelton@eightygrit.com"
         }
     ],
     "require": {
@@ -28,12 +32,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Devtical\\Sanctum\\": "src"
+            "Eightygrit\\FilamentSanctum\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Devtical\\Sanctum\\Tests\\": "tests"
+            "Eightygrit\\FilamentSanctum\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,7 +54,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Devtical\\Sanctum\\SanctumServiceProvider"
+                "Eightygrit\\FilamentSanctum\\SanctumServiceProvider"
             ]
         }
     },

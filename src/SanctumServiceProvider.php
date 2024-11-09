@@ -1,8 +1,8 @@
 <?php
 
-namespace Devtical\Sanctum;
+namespace Eightygrit\FilamentSanctum;
 
-use Devtical\Sanctum\Pages\Sanctum;
+use Eightygrit\FilamentSanctum\Pages\Sanctum;
 use Filament\FilamentServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Filament\Navigation\UserMenuItem;
