@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "laravel/sanctum": "^3.0",
-        "filament/filament": "^2.0"
+        "laravel/sanctum": "^3.0|^4.0",
+        "filament/filament": "^2.0|^3.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
@@ -51,6 +51,6 @@
             ]
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
