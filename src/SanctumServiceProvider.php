@@ -2,38 +2,22 @@
 
 namespace Devtical\Sanctum;
 
-use Devtical\Sanctum\Pages\Sanctum;
-use Filament\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Package;
-use Filament\Navigation\UserMenuItem;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class SanctumServiceProvider extends PluginServiceProvider
+class SanctumServiceProvider extends PackageServiceProvider
 {
-    protected array $pages = [
-        Sanctum::class,
-    ];
-
-    protected array $styles = [
-        'filament-sanctum' => __DIR__.'/../resources/dist/app.css',
-    ];
-
     public function configurePackage(Package $package): void
     {
         $package
             ->name('filament-sanctum')
             ->hasViews()
             ->hasConfigFile()
-            ->hasAssets('filament-sanctum')
             ->hasTranslations();
     }
 
-    protected function getUserMenuItems(): array
+    public function packageRegistered(): void
     {
-        return config('filament-sanctum.user_menu') ? [
-            UserMenuItem::make()
-                ->label(trans(config('filament-sanctum.label')))
-                ->url(route('filament.pages.'.config('filament-sanctum.slug')))
-                ->icon('heroicon-s-cog'),
-        ] : [];
+        $this->app->singleton(SanctumPlugin::class);
     }
 }

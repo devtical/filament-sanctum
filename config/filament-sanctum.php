@@ -2,27 +2,49 @@
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Navigation Settings
+    |--------------------------------------------------------------------------
+    */
     'navigation' => [
-        'should_register' => true,
-        'sort' => -1,
-        'group' => null,
+        'slug' => 'sanctum',
+        'icon' => 'heroicon-o-finger-print',
+
+        'sidebar_menu' => [
+            'enabled' => false,
+            'sort' => -1,
+            'group' => null,
+        ],
+
+        'user_menu' => [
+            'enabled' => true,
+        ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Token Creation Settings
+    |--------------------------------------------------------------------------
+    */
     'abilities' => [
-        'users:read' => 'Read User',
-        'users:create' => 'Create User',
-        'users:update' => 'Update User',
-        'users:delete' => 'Delete User',
-        'blog:read' => 'Read Blog',
-        'blog:create' => 'Create Blog',
-        'blog:update' => 'Update Blog',
-        'blog:delete' => 'Delete Blog',
-    ],
+        'columns' => 4,
+        'list' => [
+            // User management abilities
+            'users:read' => 'Read User',
+            'users:create' => 'Create User',
+            'users:update' => 'Update User',
+            'users:delete' => 'Delete User',
 
-    'columns' => 4,
-    'navigation_menu' => true,
-    'user_menu' => false,
-    'label' => 'Sanctum',
-    'slug' => 'sanctum',
+            // Blog management abilities
+            'blog:read' => 'Read Blog',
+            'blog:create' => 'Create Blog',
+            'blog:update' => 'Update Blog',
+            'blog:delete' => 'Delete Blog',
+
+            // Add more abilities as needed for your application
+            // Format: 'ability:action' => 'Human Readable Description'
+        ],
+    ],
 
 ];
