@@ -6,18 +6,20 @@ use Orchestra\Testbench\TestCase as Testbench;
 
 abstract class TestbenchTestCase extends Testbench
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
     }
 
     protected function getPackageProviders($app): array
     {
-        return ['Devtical\Sanctum\SanctumServiceProvider'];
+        return [
+            \Devtical\Sanctum\SanctumServiceProvider::class,
+        ];
     }
 }
