@@ -1,22 +1,27 @@
 <x-filament::page>
   @if($sanctumToken = session('sanctum-token'))
-  <div class="rounded-md bg-yellow-50 p-4">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <!-- Heroicon name: mini/exclamation-triangle -->
-        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path fill-rule="evenodd" d="M8.485 3.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 3.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-        </svg>
-      </div>
-      <div class="ml-3 block w-full">
-        <h3 class="text-sm font-medium text-yellow-800">{{ trans('Attention needed') }}</h3>
-        <div class="mt-2 text-sm text-yellow-700">
-          <p class="mb-4">{{ trans('Make sure to copy your new personal access token now. You won\'t be able to see it again!') }}</p>
-          <div class="block w-full rounded-md border-transparent bg-yellow-100 text-sm font-mono p-4">{{ $sanctumToken }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <x-filament::section  icon="heroicon-o-exclamation-triangle" icon-color="warning" class="mb-6">
+    <x-slot name="heading">{{ __('Attention needed') }}</x-slot>
+    <x-slot name="description">
+      {{ __("Make sure to copy your new personal access token now. You won't be able to see it again!") }}
+    </x-slot>
+
+    <x-filament::input.wrapper class="mt-4">
+        <x-filament::input id="sanctum-token" type="text" :value="$sanctumToken" class="w-full rounded-l-md font-mono text-sm" readonly/>
+        <x-slot name="suffix">
+          <x-filament::icon-button icon="heroicon-m-clipboard" label="{{ __('Copy') }}" onclick="copyToken(event)"/>
+        </x-slot>
+      </x-filament::input.wrapper>
+  </x-filament::section>
+
+  <script>
+    function copyToken(event) {
+      const tokenInput = document.getElementById('sanctum-token');
+      tokenInput.select();
+      tokenInput.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+    }
+  </script>
   @endif
 
   {{ $this->table }}

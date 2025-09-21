@@ -1,27 +1,32 @@
 {
     "name": "devtical/filament-sanctum",
-    "description": "Filament Sanctum",
+    "description": "Laravel Sanctum integration for Filament 4",
+    "version": "1.0.0",
     "keywords": [
-        "Devtical",
+        "devtical",
         "sanctum",
-        "laravel"
+        "laravel",
+        "filament"
     ],
     "homepage": "https://github.com/devtical/filament-sanctum",
     "license": "MIT",
     "authors": [
         {
-            "name": "Wahyu Kristianto",
+            "name": "W Kristianto",
             "email": "w.kristories@gmail.com"
         }
     ],
     "require": {
-        "laravel/sanctum": "^3.0",
-        "filament/filament": "^2.0"
+        "php": "^8.3",
+        "filament/filament": "^4.0",
+        "illuminate/contracts": "12.*",
+        "laravel/sanctum": "^4.0",
+        "orchestra/testbench": "10.*",
+        "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
-        "pestphp/pest": "^1.20",
-        "orchestra/testbench": "^7.0"
+        "pestphp/pest": "^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +39,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/pest",
+        "test": "vendor/bin/pest --no-coverage",
         "format": "vendor/bin/pint"
     },
     "config": {
