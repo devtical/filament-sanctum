@@ -17,7 +17,7 @@ class ServiceProviderTest extends TestbenchTestCase
     public function test_service_provider_can_be_instantiated()
     {
         $provider = new SanctumServiceProvider($this->app);
-        
+
         $this->assertInstanceOf(SanctumServiceProvider::class, $provider);
     }
 
@@ -25,7 +25,7 @@ class ServiceProviderTest extends TestbenchTestCase
     {
         $plugin1 = $this->app->make(SanctumPlugin::class);
         $plugin2 = $this->app->make(SanctumPlugin::class);
-        
+
         $this->assertSame($plugin1, $plugin2);
         $this->assertInstanceOf(SanctumPlugin::class, $plugin1);
     }
@@ -34,10 +34,10 @@ class ServiceProviderTest extends TestbenchTestCase
     {
         // Test config is available
         $this->assertTrue($this->app['config']->has('filament-sanctum'));
-        
+
         // Test views are available
         $this->assertTrue($this->app['view']->exists('filament-sanctum::pages.sanctum'));
-        
+
         // Test translations are available
         $this->assertInstanceOf('Illuminate\Translation\Translator', $this->app['translator']);
     }
