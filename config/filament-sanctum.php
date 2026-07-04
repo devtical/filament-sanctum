@@ -24,11 +24,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authorization Settings
+    |--------------------------------------------------------------------------
+    */
+    'authorization' => [
+        'enabled' => false,
+        'gate' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Token Creation Settings
     |--------------------------------------------------------------------------
     */
     'abilities' => [
         'columns' => 4,
+        'allow_expiration' => true,
+        'default_expiration_days' => 30,
+        'expiration_presets' => [7, 30, 60, 90],
         'list' => [
             // User management abilities
             'users:read' => 'Read User',
