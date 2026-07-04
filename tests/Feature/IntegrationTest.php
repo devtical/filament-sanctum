@@ -37,34 +37,35 @@ class IntegrationTest extends TestbenchTestCase
 
     public function test_user_menu_integration()
     {
-        // Test user menu when enabled
         Config::set('filament-sanctum.navigation.user_menu.enabled', true);
-        Config::set('filament-sanctum.navigation.slug', 'sanctum');
         Config::set('filament-sanctum.navigation.icon', 'heroicon-o-finger-print');
-        
+
         $plugin = $this->app->make(SanctumPlugin::class);
-        
-        $panel = \Mockery::mock('Filament\Panel');
+        $menuItems = [];
+
+        $panel = Mockery::mock(\Filament\Panel::class);
         $panel->shouldReceive('userMenuItems')
             ->once()
-            ->with(\Mockery::on(function (array $items): bool {
-                $url = $items[0]->getUrl();
+            ->withArgs(function (array $items) use (&$menuItems): bool {
+                $menuItems = $items;
 
-                return str_ends_with($url, '/admin/sanctum')
-                    || str_ends_with($url, '/sanctum');
-            }))
+                return true;
+            })
             ->andReturnSelf();
-        
+
         $plugin->boot($panel);
-        
-        // Test user menu when disabled
+
+        $this->assertCount(1, $menuItems);
+        $this->assertSame('Token', $menuItems[0]->getLabel());
+        $this->assertSame('heroicon-o-finger-print', $menuItems[0]->getIcon());
+
         Config::set('filament-sanctum.navigation.user_menu.enabled', false);
-        
-        $panel2 = \Mockery::mock('Filament\Panel');
+
+        $panel2 = Mockery::mock(\Filament\Panel::class);
         $panel2->shouldNotReceive('userMenuItems');
-        
+
         $plugin->boot($panel2);
-        
+
         $this->assertInstanceOf(SanctumPlugin::class, $plugin);
     }
 
