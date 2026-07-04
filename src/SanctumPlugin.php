@@ -34,7 +34,7 @@ class SanctumPlugin implements Plugin
             $panel->userMenuItems([
                 MenuItem::make()
                     ->label(trans('Sanctum'))
-                    ->url(Sanctum::getUrl())
+                    ->url(fn (): string => Sanctum::getUrl(panel: $panel->getId()))
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
             ]);
         }
