@@ -1,6 +1,6 @@
 {
     "name": "devtical/filament-sanctum",
-    "description": "Laravel Sanctum integration for Filament 4 & 5",
+    "description": "Manage Laravel Sanctum personal access tokens from your Filament panel",
     "keywords": [
         "devtical",
         "sanctum",
