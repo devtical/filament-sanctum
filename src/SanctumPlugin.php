@@ -9,6 +9,11 @@ use Filament\Panel;
 
 class SanctumPlugin implements Plugin
 {
+    public static function make(): static
+    {
+        return app(static::class);
+    }
+
     public function getId(): string
     {
         return 'filament-sanctum';
@@ -29,7 +34,7 @@ class SanctumPlugin implements Plugin
             $panel->userMenuItems([
                 MenuItem::make()
                     ->label(trans('Sanctum'))
-                    ->url($panel->getPath().'/'.config('filament-sanctum.navigation.slug'))
+                    ->url(Sanctum::getUrl())
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
             ]);
         }

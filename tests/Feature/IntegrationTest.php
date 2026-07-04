@@ -45,11 +45,14 @@ class IntegrationTest extends TestbenchTestCase
         $plugin = $this->app->make(SanctumPlugin::class);
         
         $panel = \Mockery::mock('Filament\Panel');
-        $panel->shouldReceive('getPath')
-            ->once()
-            ->andReturn('/admin');
         $panel->shouldReceive('userMenuItems')
             ->once()
+            ->with(\Mockery::on(function (array $items): bool {
+                $url = $items[0]->getUrl();
+
+                return str_ends_with($url, '/admin/sanctum')
+                    || str_ends_with($url, '/sanctum');
+            }))
             ->andReturnSelf();
         
         $plugin->boot($panel);
