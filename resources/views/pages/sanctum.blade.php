@@ -17,6 +17,12 @@
   <script>
     function copyToken(event) {
       const tokenInput = document.getElementById('sanctum-token');
+
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(tokenInput.value);
+        return;
+      }
+
       tokenInput.select();
       tokenInput.setSelectionRange(0, 99999);
       document.execCommand('copy');

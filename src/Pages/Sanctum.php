@@ -3,158 +3,130 @@
 namespace Devtical\Sanctum\Pages;
 
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
-/**
- * Sanctum Page Class
- * 
- * This class represents the main page for managing Laravel Sanctum API tokens
- * within the Filament admin panel. It provides functionality to create, view,
- * and revoke personal access tokens for authenticated users.
- */
 class Sanctum extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
-    /**
-     * Navigation icon for the page
-     * Set to null to use default icon from config
-     */
     protected static string|BackedEnum|null $navigationIcon = null;
 
-    /**
-     * Get the navigation icon for this page
-     * 
-     * @return string The icon name from config or default fingerprint icon
-     */
+    protected string $view = 'filament-sanctum::pages.sanctum';
+
     public static function getNavigationIcon(): string
     {
         return config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print');
     }
 
-    /**
-     * The view file that will be used to render this page
-     */
-    protected string $view = 'filament-sanctum::pages.sanctum';
+    public static function getDefaultSlug(): string
+    {
+        return config('filament-sanctum.navigation.slug', 'sanctum');
+    }
 
-    /**
-     * The URL slug for this page
-     */
-    protected static ?string $slug = 'sanctum';
-
-    /**
-     * Get the page title
-     * 
-     * @return string Translated page title
-     */
     public function getTitle(): string
     {
         return trans('Sanctum');
     }
 
-    /**
-     * Get the navigation group this page belongs to
-     * 
-     * @return string|null The navigation group name from config
-     */
     public static function getNavigationGroup(): ?string
     {
         return config('filament-sanctum.navigation.sidebar_menu.group', null);
     }
 
-    /**
-     * Get the sort order for navigation menu
-     * 
-     * @return int|null Sort order from config, defaults to -1
-     */
     public static function getNavigationSort(): ?int
     {
         return config('filament-sanctum.navigation.sidebar_menu.sort', -1);
     }
 
-    /**
-     * Get the navigation label for this page
-     * 
-     * @return string Translated navigation label
-     */
     public static function getNavigationLabel(): string
     {
         return trans('Sanctum');
     }
 
-    /**
-     * Determine if this page should be registered in navigation
-     * 
-     * @return bool Whether to show this page in navigation menu
-     */
     public static function shouldRegisterNavigation(): bool
     {
         return config('filament-sanctum.navigation.sidebar_menu.enabled');
     }
 
-    /**
-     * Get the query builder for the tokens table
-     * 
-     * @return Builder Query builder for authenticated user's tokens
-     */
+    public static function canAccess(): bool
+    {
+        if (! config('filament-sanctum.authorization.enabled')) {
+            return true;
+        }
+
+        $gate = config('filament-sanctum.authorization.gate');
+
+        if (blank($gate)) {
+            return true;
+        }
+
+        return Gate::allows($gate);
+    }
+
     protected function getTableQuery(): Builder
     {
         return Auth::user()->tokens()->getQuery();
     }
 
-    /**
-     * Get the default column to sort by
-     * 
-     * @return string|null Default sort column (id)
-     */
     protected function getDefaultTableSortColumn(): ?string
     {
         return 'id';
     }
 
-    /**
-     * Get the default sort direction
-     * 
-     * @return string|null Default sort direction (descending)
-     */
     protected function getDefaultTableSortDirection(): ?string
     {
         return 'desc';
     }
 
-    /**
-     * Define the columns for the tokens table
-     * 
-     * @return array Array of table column definitions
-     */
     protected function getTableColumns(): array
     {
         return [
-            // Token name column - sortable and searchable
             Tables\Columns\TextColumn::make('name')
                 ->label(trans('Name'))
                 ->sortable()
                 ->searchable(),
-            
-            // Token abilities column - displayed as tags
-            Tables\Columns\TagsColumn::make('abilities')
-                ->label(trans('Abilities')),
-            
-            // Last used timestamp column - sortable datetime
+
+            Tables\Columns\TextColumn::make('abilities')
+                ->label(trans('Abilities'))
+                ->getStateUsing(function ($record): string {
+                    $count = count($this->resolveAbilities(null, $record));
+
+                    return $count === 0
+                        ? trans('None')
+                        : trans(':count abilities', ['count' => $count]);
+                })
+                ->tooltip(fn ($record): ?string => blank($this->resolveAbilities(null, $record))
+                    ? null
+                    : collect($this->formatAbilityLabels($this->resolveAbilities(null, $record)))->join(', '))
+                ->action($this->makeTokenDetailsAction('tokenDetailsColumn'))
+                ->color(fn ($record): string => count($this->resolveAbilities(null, $record)) > 0 ? 'primary' : 'gray'),
+
+            Tables\Columns\TextColumn::make('expires_at')
+                ->label(trans('Expires at'))
+                ->dateTime()
+                ->sortable()
+                ->placeholder(trans('Never')),
+
             Tables\Columns\TextColumn::make('last_used_at')
                 ->label(trans('Last used at'))
                 ->dateTime()
                 ->sortable(),
-            
-            // Created timestamp column - sortable datetime
+
             Tables\Columns\TextColumn::make('created_at')
                 ->label(trans('Created at'))
                 ->dateTime()
@@ -162,62 +134,54 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
         ];
     }
 
-    /**
-     * Define the header actions available on this page
-     * 
-     * @return array Array of header action definitions
-     */
-    protected function getHeaderActions(): array
+    protected function getTableActions(): array
     {
         return [
-            // Action to create a new personal access token
-            Action::make('new')
-                ->label(trans('Create a new Token'))
-                ->action(function (array $data) {
-                    // Get the authenticated user
-                    $user = Auth::user();
-                    
-                    // Create a new token with specified name and abilities
-                    $token = $user->createToken($data['name'], $data['abilities'])->plainTextToken;
-                    
-                    // Flash the token to session for display
-                    request()->session()->flash('sanctum-token', $token);
-                    
-                    // Show success notification
-                    Notification::make()
-                        ->title(trans('Saved successfully'))
-                        ->success()
-                        ->icon('heroicon-o-finger-print')
-                        ->title(trans('Token was created successfully'))
-                        ->send();
-
-                    // Redirect back to the sanctum page
-                    return redirect(route('filament.admin.pages.'.config('filament-sanctum.navigation.slug')));
-                })
-                ->form([
-                    // Token name input field
-                    Forms\Components\TextInput::make('name')
-                        ->label(trans('Token Name'))
-                        ->required(),
-                    
-                    // Token abilities selection - checkbox list
-                    Forms\Components\CheckboxList::make('abilities')
-                        ->label(trans('Abilities'))
-                        ->options(config('filament-sanctum.abilities.list'))
-                        ->columns(config('filament-sanctum.abilities.columns')),
-                ]),
+            $this->makeTokenDetailsAction()
+                ->icon('heroicon-o-eye')
+                ->label(trans('Details')),
+            Action::make('revoke')
+                ->label(trans('Revoke'))
+                ->action(fn ($record) => $record->delete())
+                ->requiresConfirmation()
+                ->color('danger')
+                ->icon('heroicon-o-trash'),
         ];
     }
 
-    /**
-     * Define bulk actions available for the tokens table
-     * 
-     * @return array Array of bulk action definitions
-     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('new')
+                ->label(trans('Create a new Token'))
+                ->action(function (array $data) {
+                    $user = Auth::user();
+
+                    $expiresAt = $this->resolveTokenExpiration($data);
+
+                    $token = $user->createToken(
+                        $data['name'],
+                        $data['abilities'] ?? [],
+                        $expiresAt,
+                    )->plainTextToken;
+
+                    request()->session()->flash('sanctum-token', $token);
+
+                    Notification::make()
+                        ->title(trans('Token was created successfully'))
+                        ->success()
+                        ->icon('heroicon-o-finger-print')
+                        ->send();
+
+                    return redirect(static::getUrl(panel: Filament::getCurrentPanel()?->getId()));
+                })
+                ->form($this->getCreateTokenFormSchema()),
+        ];
+    }
+
     protected function getTableBulkActions(): array
     {
         return [
-            // Bulk action to revoke multiple tokens at once
             BulkAction::make('revoke')
                 ->label(trans('Revoke'))
                 ->action(fn (Collection $records) => $records->each->delete())
@@ -226,5 +190,182 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
                 ->color('danger')
                 ->icon('heroicon-o-trash'),
         ];
+    }
+
+    /**
+     * @return array<int, Forms\Components\Component>
+     */
+    protected function getCreateTokenFormSchema(): array
+    {
+        $nameField = Forms\Components\TextInput::make('name')
+            ->label(trans('Token Name'))
+            ->required();
+
+        $expirationFields = config('filament-sanctum.abilities.allow_expiration')
+            ? [
+                Grid::make(2)
+                    ->schema([
+                        $nameField,
+                        Forms\Components\Select::make('expiration')
+                            ->label(trans('Expiration'))
+                            ->options(fn (): array => $this->getExpirationOptions())
+                            ->default(fn (): string => $this->getDefaultExpirationValue())
+                            ->live()
+                            ->required()
+                            ->native(false)
+                            ->prefixIcon('heroicon-o-calendar-days'),
+                    ]),
+                Forms\Components\DateTimePicker::make('expires_at')
+                    ->label(trans('Expires at'))
+                    ->minDate(now())
+                    ->visible(fn (Get $get): bool => $get('expiration') === 'custom')
+                    ->required(fn (Get $get): bool => $get('expiration') === 'custom'),
+            ]
+            : [$nameField];
+
+        return [
+            ...$expirationFields,
+            Forms\Components\CheckboxList::make('abilities')
+                ->label(trans('Abilities'))
+                ->options(config('filament-sanctum.abilities.list'))
+                ->columns(config('filament-sanctum.abilities.columns')),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    protected function resolveTokenExpiration(array $data): ?Carbon
+    {
+        if (! config('filament-sanctum.abilities.allow_expiration')) {
+            return null;
+        }
+
+        return match ($data['expiration'] ?? 'never') {
+            'never' => null,
+            'custom' => filled($data['expires_at'] ?? null)
+                ? Carbon::parse($data['expires_at'])
+                : null,
+            default => now()->addDays((int) $data['expiration']),
+        };
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function getExpirationOptions(): array
+    {
+        $options = [];
+
+        foreach (config('filament-sanctum.abilities.expiration_presets', [7, 30, 60, 90]) as $days) {
+            $options[(string) $days] = trans(':days days (:date)', [
+                'days' => $days,
+                'date' => now()->addDays((int) $days)->format('M j, Y'),
+            ]);
+        }
+
+        $options['custom'] = trans('Custom');
+        $options['never'] = trans('No expiration');
+
+        return $options;
+    }
+
+    protected function getDefaultExpirationValue(): string
+    {
+        $defaultDays = config('filament-sanctum.abilities.default_expiration_days');
+
+        if (blank($defaultDays)) {
+            return 'never';
+        }
+
+        $presets = array_map(
+            strval(...),
+            config('filament-sanctum.abilities.expiration_presets', [7, 30, 60, 90]),
+        );
+
+        return in_array((string) $defaultDays, $presets, true)
+            ? (string) $defaultDays
+            : 'custom';
+    }
+
+    protected function makeTokenDetailsAction(string $name = 'tokenDetails'): ViewAction
+    {
+        return ViewAction::make($name)
+            ->modalHeading(fn ($record) => $record->name)
+            ->schema($this->getTokenDetailsSchema());
+    }
+
+    /**
+     * @return array<int, TextEntry>
+     */
+    protected function getTokenDetailsSchema(): array
+    {
+        return [
+            TextEntry::make('abilities')
+                ->label(trans('Abilities'))
+                ->badge()
+                ->formatStateUsing(fn ($state): ?string => $this->formatAbilityLabel($state))
+                ->placeholder(trans('None')),
+            TextEntry::make('expires_at')
+                ->label(trans('Expires at'))
+                ->dateTime()
+                ->placeholder(trans('Never')),
+            TextEntry::make('last_used_at')
+                ->label(trans('Last used at'))
+                ->dateTime()
+                ->placeholder(trans('Never')),
+            TextEntry::make('created_at')
+                ->label(trans('Created at'))
+                ->dateTime(),
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function resolveAbilities(mixed $state, mixed $record = null): array
+    {
+        if (is_array($state)) {
+            return $state;
+        }
+
+        if (is_string($state) && filled($state)) {
+            $decoded = json_decode($state, true);
+
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+
+            return [$state];
+        }
+
+        if ($record !== null && filled($record->abilities ?? null)) {
+            return is_array($record->abilities) ? $record->abilities : [];
+        }
+
+        return [];
+    }
+
+    protected function formatAbilityLabel(mixed $state): ?string
+    {
+        if (blank($state) || is_array($state)) {
+            return null;
+        }
+
+        $list = config('filament-sanctum.abilities.list', []);
+
+        return $list[$state] ?? (string) $state;
+    }
+
+    /**
+     * @param  array<int, string>  $abilities
+     * @return array<int, string>
+     */
+    protected function formatAbilityLabels(array $abilities): array
+    {
+        return collect($abilities)
+            ->map(fn (string $ability): string => $this->formatAbilityLabel($ability) ?? $ability)
+            ->values()
+            ->all();
     }
 }

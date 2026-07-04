@@ -3,8 +3,8 @@
 namespace Devtical\Sanctum;
 
 use Devtical\Sanctum\Pages\Sanctum;
+use Filament\Actions\Action;
 use Filament\Contracts\Plugin;
-use Filament\Navigation\MenuItem;
 use Filament\Panel;
 
 class SanctumPlugin implements Plugin
@@ -29,10 +29,9 @@ class SanctumPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        // Register user menu items if enabled
         if (config('filament-sanctum.navigation.user_menu.enabled')) {
             $panel->userMenuItems([
-                MenuItem::make()
+                Action::make('sanctum')
                     ->label(trans('Sanctum'))
                     ->url(fn (): string => Sanctum::getUrl(panel: $panel->getId()))
                     ->icon(config('filament-sanctum.navigation.icon', 'heroicon-o-finger-print')),
