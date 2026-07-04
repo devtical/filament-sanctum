@@ -13,7 +13,7 @@ You can install the package via composer:
 composer require devtical/filament-sanctum
 ```
 
-Config: 
+Config:
 
 ```bash
 php artisan vendor:publish --tag=filament-sanctum-config
@@ -45,7 +45,7 @@ If you discover any security related issues, please email `w.kristories@gmail.co
 
 ## Credits
 
-- [Wahyu Kristianto](https://github.com/kristories)
+- [W Kristianto](https://github.com/kristories)
 - [All Contributors](https://github.com/devtical/sanctum/graphs/contributors)
 
 ## License
