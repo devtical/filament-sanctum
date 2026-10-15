@@ -20,5 +20,7 @@
     "Revoke": "Cabut",
     "Copy": "Salin",
     "Attention needed": "Perlu perhatian",
-    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Pastikan untuk menyalin token akses pribadi baru Anda sekarang. Anda tidak akan dapat melihatnya lagi!"
+    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Pastikan untuk menyalin token akses pribadi baru Anda sekarang. Anda tidak akan dapat melihatnya lagi!",
+    "Copied": "Disalin",
+    "Hide token": "Sembunyikan token"
 }

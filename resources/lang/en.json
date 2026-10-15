@@ -20,5 +20,7 @@
     "Revoke": "Revoke",
     "Copy": "Copy",
     "Attention needed": "Attention needed",
-    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Make sure to copy your new personal access token now. You won't be able to see it again!"
+    "Make sure to copy your new personal access token now. You won't be able to see it again!": "Make sure to copy your new personal access token now. You won't be able to see it again!",
+    "Copied": "Copied",
+    "Hide token": "Hide token"
 }

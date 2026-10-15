@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
@@ -25,6 +24,8 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
     use Tables\Concerns\InteractsWithTable;
 
     protected static string|BackedEnum|null $navigationIcon = null;
+
+    public ?string $plainTextToken = null;
 
     protected string $view = 'filament-sanctum::pages.sanctum';
 
@@ -154,18 +155,16 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
         return [
             Action::make('new')
                 ->label(trans('Create a new Token'))
-                ->action(function (array $data) {
+                ->action(function (array $data): void {
                     $user = Auth::user();
 
-                    $expiresAt = $this->resolveTokenExpiration($data);
+                    $abilities = $data['abilities'] ?? [];
 
-                    $token = $user->createToken(
+                    $this->plainTextToken = $user->createToken(
                         $data['name'],
-                        $data['abilities'] ?? [],
-                        $expiresAt,
+                        is_array($abilities) ? array_values($abilities) : [],
+                        $this->resolveTokenExpiration($data),
                     )->plainTextToken;
-
-                    request()->session()->flash('sanctum-token', $token);
 
                     Notification::make()
                         ->title(trans('Token was created successfully'))
@@ -173,10 +172,19 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
                         ->icon('heroicon-o-finger-print')
                         ->send();
 
-                    return redirect(static::getUrl(panel: Filament::getCurrentPanel()?->getId()));
+                    // A modal action only re-renders the dialog. Force the page
+                    // so the secret is in this response instead of a flash.
+                    $this->forceRender();
                 })
-                ->form($this->getCreateTokenFormSchema()),
+                ->schema($this->getCreateTokenFormSchema()),
         ];
+    }
+
+    public function forgetPlainTextToken(): void
+    {
+        $this->plainTextToken = null;
+
+        $this->forceRender();
     }
 
     protected function getTableBulkActions(): array
@@ -193,7 +201,7 @@ class Sanctum extends Page implements Tables\Contracts\HasTable
     }
 
     /**
-     * @return array<int, Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     protected function getCreateTokenFormSchema(): array
     {

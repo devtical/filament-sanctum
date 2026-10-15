@@ -1,34 +1,66 @@
 <x-filament::page>
-  @if($sanctumToken = session('sanctum-token'))
-  <x-filament::section  icon="heroicon-o-exclamation-triangle" icon-color="warning" class="mb-6">
-    <x-slot name="heading">{{ __('Attention needed') }}</x-slot>
-    <x-slot name="description">
-      {{ __("Make sure to copy your new personal access token now. You won't be able to see it again!") }}
-    </x-slot>
+    @if (filled($plainTextToken))
+        <x-filament::section
+            icon="heroicon-o-exclamation-triangle"
+            icon-color="warning"
+            class="mb-6"
+            wire:key="sanctum-plain-text-token"
+        >
+            <x-slot name="heading">
+                {{ __('Attention needed') }}
+            </x-slot>
 
-    <x-filament::input.wrapper class="mt-4">
-        <x-filament::input id="sanctum-token" type="text" :value="$sanctumToken" class="w-full rounded-l-md font-mono text-sm" readonly/>
-        <x-slot name="suffix">
-          <x-filament::icon-button icon="heroicon-m-clipboard" label="{{ __('Copy') }}" onclick="copyToken(event)"/>
-        </x-slot>
-      </x-filament::input.wrapper>
-  </x-filament::section>
+            <x-slot name="description">
+                {{ __("Make sure to copy your new personal access token now. You won't be able to see it again!") }}
+            </x-slot>
 
-  <script>
-    function copyToken(event) {
-      const tokenInput = document.getElementById('sanctum-token');
+            <div
+                class="mt-4 space-y-3"
+                x-data="{
+                    token: @js($plainTextToken),
+                    copied: false,
+                    async copy() {
+                        try {
+                            await navigator.clipboard.writeText(this.token)
+                            this.copied = true
+                            return
+                        } catch (error) {}
 
-      if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(tokenInput.value);
-        return;
-      }
+                        const field = this.$refs.token
+                        field.focus()
+                        field.select()
+                        field.setSelectionRange(0, this.token.length)
+                        this.copied = document.execCommand('copy')
+                    },
+                }"
+            >
+                <p class="font-mono text-sm break-all text-gray-950 dark:text-white">{{ $plainTextToken }}</p>
 
-      tokenInput.select();
-      tokenInput.setSelectionRange(0, 99999);
-      document.execCommand('copy');
-    }
-  </script>
-  @endif
+                <div class="flex items-center gap-2">
+                    <x-filament::input.wrapper class="min-w-0 flex-1">
+                        <x-filament::input
+                            x-ref="token"
+                            type="text"
+                            readonly
+                            autocomplete="off"
+                            spellcheck="false"
+                            x-bind:value="token"
+                            class="font-mono"
+                        />
+                    </x-filament::input.wrapper>
 
-  {{ $this->table }}
+                    <x-filament::button type="button" color="gray" x-on:click="copy()">
+                        <span x-show="! copied">{{ __('Copy') }}</span>
+                        <span x-cloak x-show="copied">{{ __('Copied') }}</span>
+                    </x-filament::button>
+
+                    <x-filament::button type="button" color="gray" wire:click="forgetPlainTextToken">
+                        {{ __('Hide token') }}
+                    </x-filament::button>
+                </div>
+            </div>
+        </x-filament::section>
+    @endif
+
+    {{ $this->table }}
 </x-filament::page>
